@@ -39,6 +39,7 @@ public class InventoryService {
     public List<InventoryResponse> isInStock(List<String> skuCode) {
         // Writes a message to the logs (useful for debugging or monitoring)
         log.info("Checking Inventory");
+        System.out.println("we ar ehere");
 
         // Here's where the database call happens!
         // We're using a method called 'findBySkuCodeIn', which we declared in InventoryRepository.

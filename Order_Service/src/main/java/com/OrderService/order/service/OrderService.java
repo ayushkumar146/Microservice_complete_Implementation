@@ -58,17 +58,18 @@ public class OrderService {
         InventoryResponse[] inventoryResponseArray = webClientBuilder.build()  // Build the WebClient
                 .get() // We are making a GET request
                 .uri( // Set the URL and query params
-                        "http://inventory-service/api/inventory", // Base URL + path
+                        "http://localhost:8083/api/inventory", // Base URL + path
                         uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build() // Add all SKU codes as query params
                 )
                 .retrieve() // Fetch the response
                 .bodyToMono(InventoryResponse[].class) // Convert the response into an array of InventoryResponse
                 .block(); // Wait (block) until we get the response (not async anymore)
+        System.out.println("all products stock " + inventoryResponseArray);
 
         // ✅ Check if ALL products are in stock
         boolean allProductsInStock = Arrays.stream(inventoryResponseArray)
                 .allMatch(InventoryResponse::isInStock); // Check if each one is true
-
+        System.out.println("al prod "+ allProductsInStock);
         if (allProductsInStock) {
             // ✅ All good, save the order to the database
             orderRepository.save(order);
