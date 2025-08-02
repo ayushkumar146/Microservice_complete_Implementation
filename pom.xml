@@ -18,12 +18,14 @@
         <module>Product_Service</module>
         <module>Order_Service</module>
         <module>Inventory_Service</module>
+        <module>Discovery_Server</module>
     </modules>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring-cloud.version>2025.0.0</spring-cloud.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -31,6 +33,13 @@
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers-bom</artifactId>
                 <version>1.21.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -71,3 +80,6 @@
 <!--baake pom.xml ke depedencies pehle ke projects se compy krke likh diye h, and src bhi directly copy krdia h.-->
 <!--ye sb krne ke baad maven clean verify kia tha :-  So, mvn clean verify means:
 “Delete old builds, then compile, test, and verify everything from scratch — including unit & integration tests — and ensure the build is valid.”-->
+<!--later added eureka depency and ints management-->
+<!--eureka server dependency is added to every modules, just replaces server with client-->
+<!--can check all sevices registered to eureka here -> http://localhost:8761/-->

@@ -88,3 +88,92 @@ public class OrderService {
         return orderLineItems;
     }
 }
+
+//Great question, Ayush!
+//
+//---
+//
+//## 🤔 Why did they use **WebClient** in the Order Service?
+//
+//Because the **Order Service** needs to **talk to another microservice** — the **Inventory Service** — to check if the products are in stock before placing an order.
+//
+//---
+//
+//### ✅ What is `WebClient`?
+//
+//`WebClient` is a **non-blocking**, **reactive HTTP client** from Spring WebFlux.
+//
+//It's used to **make API calls between services** in a clean and modern way.
+//
+//Think of it like Postman but in code — it sends HTTP requests like:
+//
+//* `GET /api/inventory?skuCode=iphone13`
+//* `POST`, `PUT`, etc.
+//
+//---
+//
+//### 📦 In Microservices World
+//
+//Each service is like its own app, possibly running on a different port or even server. So:
+//
+//* 🧾 OrderService handles **order placement**
+//* 📦 InventoryService handles **stock availability**
+//
+//But when placing an order, OrderService **must ask InventoryService**:
+//
+//> “Hey, is product X in stock?”
+//
+//---
+//
+//### 🤝 So, we use `WebClient` for **Service-to-Service Communication**
+//
+//Here's what happens:
+//
+//```java
+//webClientBuilder.build()
+//    .get()
+//    .uri("http://inventory-service/api/inventory", ...) // Call inventory service
+//    .retrieve()
+//    .bodyToMono(InventoryResponse[].class)
+//    .block();
+//```
+//
+//It’s calling the **inventory-service** like this:
+//
+//```
+//GET http://inventory-service/api/inventory?skuCode=iphone13&skuCode=galaxy-s22
+//```
+//
+//And it waits for the response:
+//
+//```json
+//[
+//  { "skuCode": "iphone13", "inStock": true },
+//  { "skuCode": "galaxy-s22", "inStock": false }
+//]
+//```
+//
+//---
+//
+//## ✅ Why not use `RestTemplate`?
+//
+//Spring recommends `WebClient` now because:
+//
+//| RestTemplate (old)          | WebClient (new)           |
+//| --------------------------- | ------------------------- |
+//| Blocking (waits)            | Non-blocking, reactive    |
+//| Deprecated in Spring 6      | Actively maintained       |
+//| Not great for reactive apps | Best for reactive systems |
+//
+//---
+//
+//## ✅ TL;DR
+//
+//They used `WebClient` because:
+//
+//* OrderService must **call InventoryService**
+//* `WebClient` lets it make an HTTP GET request
+//* It’s **modern, reactive, and efficient**
+//* Ideal for **microservices talking to each other**
+//
+//Let me know if you want to compare WebClient vs FeignClient too.
